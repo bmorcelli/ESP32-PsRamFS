@@ -38,7 +38,20 @@
   #warning "No SPIRAM detected, will use heap"
 #endif
 
+// for later support
+#if __has_include("esp_arduino_version.h")
+  #include "esp_arduino_version.h"
+#endif
+
+#if __has_include("esp_idf_version.h")
+  #include "esp_idf_version.h"
+#endif
+
 // for SPIRAM detection support
+#if (ESP_IDF_VERSION >= ESP_IDF_VERSION_VAL(5, 0, 0))
+#include "esp_psram.h"
+#define esp_spiram_init esp_psram_init
+#else
 #ifdef CONFIG_IDF_CMAKE // IDF 4+
   #if CONFIG_IDF_TARGET_ESP32 // ESP32/PICO-D4
     #include "esp32/spiram.h"
@@ -55,16 +68,7 @@
 #else // ESP32 Before IDF 4.0
   #include "esp_spiram.h"
 #endif
-
-// for later support
-#if __has_include("esp_arduino_version.h")
-  #include "esp_arduino_version.h"
 #endif
-
-#if __has_include("esp_idf_version.h")
-  #include "esp_idf_version.h"
-#endif
-
 
 #include "pfs.h"
 #include "esp_vfs.h"
